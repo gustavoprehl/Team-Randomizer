@@ -16,21 +16,6 @@ random: Para embaralhar os jogadores e formar os times aleatoriamente.
 csv: Para carregar os dados dos jogadores a partir de um arquivo CSV.
 json: Para salvar os times gerados em um arquivo JSON.
 
-# Estrutura do projeto
-team-randomizer/
-│
-├── data/
-│   ├── players.csv             # Arquivo com os dados dos jogadores
-│   └── previous_teams.json     # Arquivo para armazenar os times gerados
-│
-├── randomizer/
-│   ├── __init__.py
-│   ├── team_randomizer.py      # Contém as classes e funções principais para gerar os times
-│   └── utils.py                # Funções auxiliares, como validação de jogadores e armazenamento dos times
-│
-├── main.py                     # Arquivo principal para executar o programa
-└── README.md                   # Documentação do projeto
-
 #Como usar:
 
 Clone este repositório para o seu computador:
