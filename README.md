@@ -54,6 +54,7 @@ Ana,F,5
 João,M,3
 Maria,F,4
 Pedro,M,2
+Gustavo,M,5
 ...
 
 Execute o programa:
