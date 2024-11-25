@@ -4,3 +4,7 @@ python-dotenv==<1.0.1>
 jsonschema==<4.23.0>
 black==<24.10.0>
 flake8==<7.1.1>
+
+
+Colocar niveis de time no max 9, que a soma dê 9 ou 8;
+Escala de jogadores de 1 a 3;
