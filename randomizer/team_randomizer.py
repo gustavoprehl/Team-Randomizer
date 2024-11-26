@@ -14,7 +14,6 @@ class TeamRandomizer:
         """
         random.seed()
 
-        # Separar jogadores por gênero e classificar por nível
         women = sorted([player for player in self.players if player['gender'] == 'F'], key=lambda x: -x['level'])
         men = sorted([player for player in self.players if player['gender'] == 'M'], key=lambda x: -x['level'])
 
@@ -25,38 +24,42 @@ class TeamRandomizer:
         # Configuração inicial dos times
         teams = [[] for _ in range(self.num_teams)]
 
-        # Determinar número de jogadores por time
-        if total_players == 16:
-            base_team_size = 4
-            extra_players = 0
-        else:
-            base_team_size = 4
-            extra_players = total_players - (3 * base_team_size)
+        # Adicionar uma mulher em cada time, isso para fazer com que elas sejam chave dos times
+        for i in range(min(self.num_teams, len(women))):
+            teams[i].append(women.pop(0))
 
-        # Adicionar uma mulher em cada time, se possível
-        for i in range(3):  # Garantir mulheres nos 3 primeiros times
-            if women:
-                teams[i].append(women.pop(0))
-
-        # Combinar homens e mulheres restantes
         remaining_players = men + women
         random.shuffle(remaining_players)
 
-        # Preencher os 3 primeiros times com jogadores restantes
-        for i in range(3):
-            while len(teams[i]) < base_team_size:
-                if remaining_players:
-                    teams[i].append(remaining_players.pop(0))
+        # Função para calcular o nível total de um time
+        def calculate_team_level(team):
+            return sum(player['level'] for player in team)
 
-        # Colocar os jogadores restantes no último time
-        while remaining_players:
-            teams[3].append(remaining_players.pop(0))
+        # Distribuir jogadores nos times garantindo as regras
+        for player in remaining_players:
+            # Tentar adicionar o jogador ao time com menor nível que respeite as regras
+            added = False
+            for team in teams:
+                if len(team) < 4 and calculate_team_level(team) + player['level'] <= 9:
+                    team.append(player)
+                    added = True
+                    break
 
-        # Depuração: Exibir a composição dos times e níveis totais
-        # for i, team in enumerate(teams, start=1):
-        #     print(f"Time {i}: {[player['name'] for player in team]} | Level Total: {sum(player['level'] for player in team)}")
+            # Caso não seja possível adicionar respeitando as regras, adicionar ao time com menor nível (caso restrito)
+            if not added:
+                least_full_team = min(teams, key=lambda t: (len(t), calculate_team_level(t)))
+                if len(least_full_team) < 4:
+                    least_full_team.append(player)
+
+        # Verificar consistência final
+        for i, team in enumerate(teams):
+            if len(team) > 4:
+                raise ValueError(f"Erro: Time {i + 1} excedeu o limite de 4 jogadores.")
+            if calculate_team_level(team) > 9:
+                raise ValueError(f"Erro: Time {i + 1} excedeu o limite de nível total 9.")
 
         return teams
+
 
     def balance_teams(self, teams):
         """
@@ -96,7 +99,7 @@ def validate_team_count(players):
             print(f"Erro: {num_players} jogadores disponíveis. Máximo permitido é 16 para formar 4 times.")
             return False
     
-        print("Número de jogadores válido!")
+        #print("Número de jogadores válido!")
         return True 
 
 def validate_team_size(teams):
@@ -114,4 +117,3 @@ def validate_team_size(teams):
         print("Erro: A diferença no tamanho dos times é maior que 1.")
         return False
     return True
-
